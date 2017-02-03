@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dual">
+<!-- 에스큐엘문 넣는 공간 여기서는 세미콜론을 마지막에 넣어주지 않는다 찍으면 안됨
+마이바티스 아이디가 sql 아아디가 되는거고 네임스페이스가 전체 큰틀이 된다.
+엑스엠엘을 스스로 닫아줘야 함 / 이런식으로 혼자 쓰게 되면!!
+ -->
+  <select id="dual" resultType="int">
+    select 1 from dual
+  </select>
+</mapper>

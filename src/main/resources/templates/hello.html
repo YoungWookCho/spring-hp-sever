@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<input id="left" type="text" >
+	<select id="operator">
+		<option value="plus">+</option>
+		<option value="minus">-</option>
+	</select>
+	<input id="right" type="text" >
+	<button id="calc">계산</button>
+	result= <span id="result">?</span>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript">
+	$("#calc").on("click", function(){
+		$.ajax({
+			url: "/api2/calc",
+			method: "POST",
+			data: {
+				left: $("#left").val(),
+				right: $("#right").val(),
+				operator: $("#operator").val()
+			},
+			success: function(data) {
+				var result = data.result;
+				$("#result").text(result);
+			}
+		});
+	});
+	
+	</script>
+</body>
+</html>
