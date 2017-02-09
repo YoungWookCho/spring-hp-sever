@@ -3,6 +3,9 @@ package com.hanbit.hp.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,35 +15,121 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hanbit.hp.service.MemberService;
-// 커트롤러 설정
+
 @Controller
 public class MemberController {
 	
 	@Autowired
 	private MemberService memberService;
-	
-	//주소를 매핑해줌
+
 	@RequestMapping(value="/api2/member/signup", method=RequestMethod.POST)
-	//주소를 받는 부분
 	@ResponseBody
-	//@RequestParam 으로 받아야 하는데 유저아이디 ""해주는 이유는 자바 7에서 해줘야함
-	public Map signup (@RequestParam("userId") String userId, 
+	public Map signup(@RequestParam("userId") String userId,
 			@RequestParam("userPw") String userPw) {
-			
-		System.out.println(userId+" / "+userPw);
 		
 		if (StringUtils.isBlank(userId)) {
-			throw new RuntimeException("아이디가 잘못되었습니다");
+			throw new RuntimeException("아이디가 잘못 입력되었습니다.");
 		}
 		else if (StringUtils.isBlank(userPw)) {
-			throw new RuntimeException("비밀번호가 잘못되었습니다");
+			throw new RuntimeException("비밀번호가 잘못 입력되었습니다.");
 		}
 		
-		String uid =memberService.addMember(userId, userPw);
-
+		String uid = memberService.addMember(userId, userPw);
+		
 		Map result = new HashMap();
 		result.put("result", "ok");
 		result.put("uid", uid);
+		
 		return result;
 	}
+	
+	@RequestMapping(value="/api2/member/signin", method=RequestMethod.POST)
+	@ResponseBody
+	public Map signin(@RequestParam("userId") String userId,
+			@RequestParam("userPw") String userPw,
+			HttpSession session) {
+		
+		try {
+			if (!memberService.isValidMember(userId, userPw)) {
+				throw new RuntimeException("패스워드가 다릅니다.");
+			}
+		}
+		catch (NullPointerException e) {
+			throw new RuntimeException("가입되지 않은 사용자입니다.");
+		}
+		
+		String uid = memberService.getUid(userId);
+		
+		session.setAttribute("signedIn", true);
+		session.setAttribute("uid", uid);
+		session.setAttribute("userId", userId);
+		
+		Map result = new HashMap();
+		result.put("result", "ok");
+		
+		return result;
+	}
+	
+	@RequestMapping("/api2/member/signedin")
+	@ResponseBody
+	public Map signedin(HttpSession session) {
+		Map result = new HashMap();
+		String signedIn = "no";
+		
+		if (session.getAttribute("signedIn") != null &&
+				(Boolean) session.getAttribute("signedIn")) {
+			signedIn = "yes";
+			
+			result.put("userId", session.getAttribute("userId"));
+		}
+		
+		result.put("result", signedIn);
+		
+		return result;
+	}
+	
+	@RequestMapping(value="/api2/member/update", method=RequestMethod.POST)
+	@ResponseBody
+	public Map update(@RequestParam("userPw") String userPw,
+			HttpSession session) {
+		
+		String uid = (String) session.getAttribute("uid");
+		
+		if (StringUtils.isBlank(uid)) {
+			throw new RuntimeException("로그인이 필요합니다.");
+		}
+		
+		memberService.modifyMember(uid, userPw);
+		
+		Map result = new HashMap();
+		result.put("result", "ok");
+		
+		return result;
+	}
+	
+	@RequestMapping("/api2/member/signout")
+	@ResponseBody
+	public Map signout(HttpSession session) {
+		
+		session.invalidate();
+		
+		Map result = new HashMap();
+		result.put("result", "ok");
+		
+		return result;
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
