@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hanbit.hp.dao.MemberDAO;
 
@@ -27,12 +29,13 @@ public class MemberService {
 		
 		return key;
 	}
-	
+	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public String addMember(String userId, String userPw) {
 		String uid = generateKey("UID");
 		String encryptedUserPw = passwordEncoder.encode(userPw);
 		
 		memberDAO.insertMember(uid, userId, encryptedUserPw);
+		memberDAO.insertMemberDetail(uid, "사용자");
 		
 		return uid;
 	}

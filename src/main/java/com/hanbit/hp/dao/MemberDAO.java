@@ -21,6 +21,13 @@ public class MemberDAO {
 		
 		return sqlSession.insert("member.insertMember", param);
 	}
+	public int insertMemberDetail(String uid, String userName) {
+		Map param = new HashMap();
+		param.put("uid", uid);
+		param.put("userName", userName);
+		
+		return sqlSession.insert("member.insertMemberDetail", param);
+	}
 
 	public String selectUserPw(String userId) {
 

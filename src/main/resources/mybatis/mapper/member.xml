@@ -9,6 +9,12 @@
 	VALUES
 	(#{uid},#{userId},#{userPw}, DATE_FORMAT(NOW(),"%Y%m%d%H%i%s"));
   </insert>
+    <insert id="insertMemberDetail" parameterType="map">
+    INSERT INTO tbl_member_detail 
+    	(uid,user_name)
+	VALUES
+	(#{uid},#{userName});
+  </insert>
   
   <select id="selectUserPw" parameterType="string" resultType="string">
   	SELECT user_pw

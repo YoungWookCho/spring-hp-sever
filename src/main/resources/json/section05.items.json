@@ -1,0 +1,56 @@
+    [{
+    	"img":    	"img/main_section03_01.jpg",
+        "name":    	"캘리포니아 롤이 너무너무 맛나는 맛집",
+        "score":  	3.5,
+        "location":	"신촌",
+        "category":	"퓨전"
+    },{
+    	"img":    	"img/main_section03_02.jpg",
+        "name":    	"완전맛나는빵집",
+        "score":	4.5,
+        "location":	"신촌",
+        "category":	"빵집"
+    
+    },{
+    	"img":    	"img/main_section03_03.jpg",
+        "name":   	"싱그러운 과일샐러드",
+        "score":	2.5,
+        "location":	"노원",
+        "category":	"샐러드"
+        
+    },{
+    	"img":    	"img/main_section03_04.jpg",
+        "name":     "이연복 잡는 중국집",
+        "score":	3.5,
+        "location":	"미아",
+        "category":	"중국집"
+        
+    },{
+    	"img":    	"img/main_section03_05.jpg",
+        "name":    	"디저트77",
+        "score":	3.0,
+        "location":	"구리",
+        "category":	"디저트"
+        
+    },{
+    	"img":    	"img/main_section03_06.jpg",
+        "name":    	"컵케잌나라",
+        "score":  	5.0,
+        "location":	"일산",
+        "category":	"디저트"
+        
+    },{
+    	"img":    "img/main_section03_07.jpg",
+        "name":    "쏴와디캅",
+        "score":  	4.032423,
+        "location":	"강남",
+        "category":	"베트남음식"
+        
+    },{
+    	"img":    "img/main_section03_08.jpg",
+        "name":    "폭탄칼로리",
+        "score":  	3.5,
+        "location":	"포천",
+        "category":	"햄버거"
+        
+    }]
