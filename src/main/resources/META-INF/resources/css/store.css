@@ -1,0 +1,15 @@
+@import 'common.css';
+
+.btn-admin-file img {
+	max-width:200px;
+}
+.dropdown-toggle {
+	min-width: 250px;
+	padding-right: 24px;
+}
+.dropdown-toggle>.caret {
+	position: absolute;
+	top:50%;
+	right: 10px;
+	transform: translateY(-50%);
+}

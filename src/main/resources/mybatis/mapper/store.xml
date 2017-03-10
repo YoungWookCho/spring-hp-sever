@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="admin.store">
+  
+	<insert id="insert" parameterType="map">
+		INSERT INTO tbl_store
+			(store_id, store_name, store_img,
+			 store_score, category_id, location_id)
+		VALUES
+			(#{storeId}, #{storeName}, #{storeImg},
+			 0.0, #{categoryId}, #{locationId})
+	</insert>
+	<select id="selectList" resultType="map">
+		SELECT store_id, store_name, store_score,
+		category_name, location_name
+		FROM tbl_store 
+	</select>  
+</mapper>

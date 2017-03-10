@@ -20,8 +20,12 @@ public class AdminController {
 	
 	@RequestMapping("/{menuId}")
 	public String menu(Model model, @PathVariable("menuId") String menuId) {
+		String cssName = "main";
+		if ("store".equals(menuId)) {
+			cssName = menuId;
+		}
 		model.addAttribute("menuId", menuId);
-		model.addAttribute("cssName", "main");
+		model.addAttribute("cssName", cssName);
 		model.addAttribute("jsName", menuId);
 		
 		return "admin/" + menuId;

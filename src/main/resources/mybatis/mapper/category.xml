@@ -12,7 +12,21 @@
 		 GROUP BY c.category_id
 		 ORDER BY category_name
 	</select>
+   <select id="selectOne" parameterType="string" resultType="map">
+      SELECT category_id, category_name
+        FROM tbl_category
+       WHERE category_id = #{categoryId}
+   </select>
+    <update id="update" parameterType="map">
+      UPDATE tbl_category
+        SET category_name =#{categoryName}
+       WHERE category_id = #{categoryId}
+   </update>
 	
+	<delete id="delete" parameterType="string">
+		DELETE FROM tbl_category
+		 WHERE category_id = #{categoryId}
+	</delete>
 	<insert id="insert" parameterType="map">
 		INSERT INTO tbl_category
 			(category_id, category_name)

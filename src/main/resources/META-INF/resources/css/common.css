@@ -7,6 +7,9 @@ ul {
    margin: 0;
    padding: 0;
 }
+.block {
+	display: block;
+}
 
 header {
    position: fixed;
@@ -81,4 +84,7 @@ header {
 
 .admin-buttons {
 	text-align: right;
+}
+.admin-list table>tbody>tr {
+	cursor: pointer;
 }
