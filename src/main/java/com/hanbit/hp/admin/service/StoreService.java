@@ -1,12 +1,8 @@
 package com.hanbit.hp.admin.service;
 
+import java.util.List;
+import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,23 +14,66 @@ import com.hanbit.hp.util.KeyUtils;
 
 @Service
 public class StoreService {
+	
 	@Autowired
 	private FileService fileService;
+	
 	@Autowired
 	private StoreDAO storeDAO;
-	/* 이미지가 안들어갔을 경우에 롤백 하기 위해서 트랜잭션을 걸어준다*/
+	
+	public List getList(int page, int rowsPerPage) {
+		return storeDAO.selectList(page, rowsPerPage);
+	}
+	
+	public int count() {
+		return storeDAO.count();
+	}
+	
+	public Map get(String storeId) {
+		return storeDAO.selectOne(storeId);
+	}
+	
 	@Transactional
-	public int add(String storeName, String categoryId, 
-			String locationId, MultipartFile storeImgFile) {
+	public int modify(String storeId, String storeName,
+			String categoryId, String locationId,
+			MultipartFile storeImgFile) {
 		
-		String storeId = KeyUtils.generateKey("STO");
-		String storeImg = "/api2/file/"+storeId;
-		int result =storeDAO.insert(storeId, storeName, storeImg, categoryId, locationId);
+		int result = storeDAO.update(storeId, storeName, categoryId, locationId);
 		
-		/* File저장*/
-		fileService.addAndSave(storeId, storeImgFile);
-
+		if (storeImgFile != null) {
+			fileService.updateAndSave(storeId, storeImgFile);
+		}
+		
+		return result;
+	}
+	@Transactional
+	public int delete (String storeId) {
+		fileService.delete(storeId);
+		int result = storeDAO.delete(storeId);
 		return result;
 	}
 
+	@Transactional
+	public int add(String storeName,
+			String categoryId, String locationId,
+			MultipartFile storeImgFile) {
+		
+		String storeId = KeyUtils.generateKey("STO");
+		String storeImg = "/api2/file/" + storeId;	
+		
+		int result = storeDAO.insert(storeId, storeName, storeImg, categoryId, locationId);
+		
+		fileService.addAndSave(storeId, storeImgFile);
+		
+		return result;
+	}
+	
 }
+
+
+
+
+
+
+
+

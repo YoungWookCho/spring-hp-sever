@@ -4,7 +4,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/admin")
@@ -20,11 +19,14 @@ public class AdminController {
 	
 	@RequestMapping("/{menuId}")
 	public String menu(Model model, @PathVariable("menuId") String menuId) {
+		model.addAttribute("menuId", menuId);
+		
 		String cssName = "main";
+		
 		if ("store".equals(menuId)) {
 			cssName = menuId;
 		}
-		model.addAttribute("menuId", menuId);
+		
 		model.addAttribute("cssName", cssName);
 		model.addAttribute("jsName", menuId);
 		

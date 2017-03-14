@@ -80,8 +80,13 @@ header {
 .admin-update {
 	display: none;
 }
-
-
+.admin-paging {
+	width: 100%;
+	text-align: center;	
+}
+.admin-paging>li {
+	display: inline-block;
+}
 .admin-buttons {
 	text-align: right;
 }

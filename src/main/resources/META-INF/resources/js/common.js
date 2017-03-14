@@ -31,22 +31,22 @@ define([
 			
 			fileInput.off("change");
 			fileInput.on("change", function() {
-				
-			try {
-				var fileReader = new FileReader();
-				fileReader.onload = function(event) {
-					var tmpImgId = "tmp-" + fileInputId;
-					btn.html("<img id='" + tmpImgId + "'>");
+				try {
+					var fileReader = new FileReader();
 					
-					$("#" + tmpImgId).attr("src", event.target.result);
-				};
-				
-				fileReader.readAsDataURL(this.files[0]);
-			} catch (e) {
-				btn.text(this.val())
-				return;
-			}
-				
+					fileReader.onload = function(event) {
+						var tmpImgId = "tmp-" + fileInputId;
+						btn.html("<img id='" + tmpImgId + "'>");
+						
+						$("#" + tmpImgId).attr("src", event.target.result);
+					};
+					
+					fileReader.readAsDataURL(this.files[0]);
+				}
+				catch (e) {
+					btn.text($(this).val());
+					return;
+				}
 			});
 			
 			fileInput.click();

@@ -3,16 +3,23 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="file">
-  <insert id="insert" parameterType="map">
-  	INSERT INTO tbl_file
-		(file_id, file_type, file_size, file_name)
-	VALUES
-		(#{fileId}, #{fileType}, #{fileSize}, #{fileName})
-  </insert>
   
-   <select id="selectOne" parameterType="string" resultType="map">
-      SELECT file_id, file_type, file_size, file_name
-        FROM tbl_file
-       WHERE file_id = #{fileId}
-   </select>
+	<insert id="insert" parameterType="map">
+		INSERT INTO tbl_file
+			(file_id, file_type, file_size, file_name)
+		VALUES
+			(#{fileId}, #{fileType}, #{fileSize}, #{fileName})
+	</insert>
+	
+	<delete id="delete" parameterType="string">
+		DELETE FROM tbl_file
+		 WHERE file_id = #{fileId}
+	</delete>
+	
+	<select id="selectOne" parameterType="string" resultType="map">
+		SELECT file_id, file_type, file_size, file_name
+		  FROM tbl_file
+		 WHERE file_id = #{fileId}
+	</select>
+  
 </mapper>
