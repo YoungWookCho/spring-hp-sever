@@ -167,8 +167,21 @@ require([
 		var addrInput =$("#"+$(this).attr("for"));
 		
 		window.jusoCallback = function(addr, geoInfo) {
-			console.log(geoInfo);
+			console.log(geoInfo.results[0].geometry.location);
 			addrInput.val(addr);
+			
+			currentStore.storeAddr = addr;
+			currentStore.storeLat =geoInfo.results[0].geometry.location.lat;
+			currentStore.storeLng =geoInfo.results[0].geometry.location.lng;
+			
+			var mapImageSrc = "https://maps.googleapis.com/maps/api/staticmap" +
+            "?center=" + currentStore.storeLat + "," + currentStore.storeLng +
+            "&markers=color:red|" + currentStore.storeLat + "," + currentStore.storeLng +
+            "&zoom=16" +
+            "&size=300x300" +
+            "&key=AIzaSyAOTSLj132cWOhCddu9kOwj7u2yBQLJ4PQ";
+			addrInput.parent("div").find("img").remove();
+			addrInput.parent("div").append("<img src='"+mapImageSrc+"'>");
 		};
 	});
 	
@@ -217,6 +230,10 @@ require([
 			$("#add-store_name").focus();
 			return;
 		}
+		else if (!currentStore.storeAddr) {
+			alert("주소입력하세요");
+			return;
+		}
 		else if (storeImg === "") {
 			alert("대표이미지를 선택하세요.");
 			return;
@@ -232,6 +249,9 @@ require([
 		
 		var formData = new FormData();
 		formData.append("storeName", storeName);
+		formData.append("storeAddr", currentStore.storeAddr);
+		formData.append("storeLat", currentStore.storeLat);
+		formData.append("storeLng", currentStore.storeLng);
 		formData.append("categoryId", currentStore.categoryId);
 		formData.append("locationId", currentStore.locationId);
 		

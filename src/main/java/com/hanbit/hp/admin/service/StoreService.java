@@ -55,14 +55,15 @@ public class StoreService {
 
 	@Transactional
 	public int add(String storeName,
-			String categoryId, String locationId,
+			String categoryId, String locationId, Map storeDetail,
 			MultipartFile storeImgFile) {
 		
 		String storeId = KeyUtils.generateKey("STO");
 		String storeImg = "/api2/file/" + storeId;	
 		
 		int result = storeDAO.insert(storeId, storeName, storeImg, categoryId, locationId);
-		
+		storeDetail.put("storeId", storeId);
+		storeDAO.insertDetail(storeDetail);
 		fileService.addAndSave(storeId, storeImgFile);
 		
 		return result;

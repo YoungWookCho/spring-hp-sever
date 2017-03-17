@@ -57,6 +57,10 @@ public class StoreDAO {
 	public int delete (String storeId) {
 		return sqlSession.delete("admin.store.delete",storeId);
 	}
+	public int insertDetail(Map param) {
+		
+		return sqlSession.insert("admin.store.insertDetail", param);
+	}
 	
 }
 
