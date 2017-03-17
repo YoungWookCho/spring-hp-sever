@@ -161,6 +161,17 @@ require([
 		});
 	}
 	
+	$(".btn-addr").on("click", function() {
+		var jusoPop = window.open("/admin/juso#ready","jusoPop","width=570,height=420, scrollbars=yes");
+		
+		var addrInput =$("#"+$(this).attr("for"));
+		
+		window.jusoCallback = function(addr, geoInfo) {
+			console.log(geoInfo);
+			addrInput.val(addr);
+		};
+	});
+	
 	$(".btn-admin-update").on("click", function() {
 		var storeId = $("#upt-store_id").val();
 		var storeName = $("#upt-store_name").val().trim();

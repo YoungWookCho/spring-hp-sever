@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
-public class JsonfileService {
+public class JsonFileService {
 	
 	private static ObjectMapper mapper = new ObjectMapper();
 	
