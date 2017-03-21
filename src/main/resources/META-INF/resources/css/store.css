@@ -13,3 +13,21 @@
 	right: 10px;
 	transform: translateY(-50%);
 }
+.form-group label[required]::after {
+	content:"*";
+	color:#f00;
+	font-weight: bold;
+}
+
+.btn.btn-default:focus {
+	outline:none;
+}
+.btn-group>.btn.active,
+.btn-group>.btn.active:focus,
+.btn-group>.btn.active:hover {
+   background-color: #337ab7 !important;
+   color: #fff !important;
+}
+
+
+

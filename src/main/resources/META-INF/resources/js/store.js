@@ -44,11 +44,22 @@ require([
 		}
 		else if (section === ".admin-add") {
 			$("#add-store_name").val("");
+			$("#add-branch_name").val("");
 			$("#add-store_img").val("");
 			$(".btn-admin-file").text("파일 선택");
 			currentStore = {};
+			$("#add-store_addr").val("");
+			$("#add-store_addr").parent("div").find("img").remove();
 			$("#btn-txt-add-category").text("카테고리 선택");
 			$("#btn-txt-add-location").text("지역 선택");
+			$("#add-store_tel").val("");
+			$("#add-store_price").val("");
+			$("#add-store_parking").val("");
+			$("#add-store_time").val("");
+			$("#add-store_break").val("");
+			$(".store_holiday-weekdays>button").removeClass("active");
+			$(".store_holiday-no>button").removeClass("active");
+			$("#add-store_website").val("");
 			
 			getCode("category", "add");
 			getCode("location", "add");
@@ -64,17 +75,63 @@ require([
 				success: function(store) {
 					$("#upt-store_id").val(store.store_id);
 					$("#upt-store_name").val(store.store_name);
+					$("#upt-branch_name").val(store.branch_name);
 					
 					$("#upt-store_img").val("");
 					$(".btn-admin-file").html("<img src='" + store.store_img +
 							"?ts=" + Date.now() + "'>");
 					
+					$("#upt-store_addr").val(store.store_addr);
+					
 					currentStore = {
+						storeAddr: store.store_addr,
+						storeLat: store.store_lat,
+						storeLng: store.store_lng,
 						categoryId: store.category_id,
 						locationId: store.location_id,
 					};
+					
+					var mapImageSrc = "https://maps.googleapis.com/maps/api/staticmap" +
+						"?maptype=roadmap" +
+						"&center=" + currentStore.storeLat + "," + currentStore.storeLng +
+						"&markers=color:red|" + currentStore.storeLat + "," + currentStore.storeLng +
+						"&zoom=16" +
+						"&size=300x300" +
+						"&key=AIzaSyAHX_Y_cP2i1v9lchEPJ4yROwzh9nK6of0";
+					$("#upt-store_addr").parent("div").find("img").remove();
+					$("#upt-store_addr").parent("div").append("<img src='" + mapImageSrc + "'>");
+				
 					$("#btn-txt-upt-category").text(store.category_name);
 					$("#btn-txt-upt-location").text(store.location_name);
+					
+					$("#upt-store_tel").val(store.store_tel);
+					$("#upt-store_price").val(store.store_price);
+					$("#upt-store_parking").val(store.store_parking);
+					$("#upt-store_time").val(store.store_time);
+					$("#upt-store_break").val(store.store_break);
+					$("#upt-store_website").val(store.store_website);
+					
+					$(".store_holiday-weekdays>button").removeClass("active");
+					$(".store_holiday-no>button").removeClass("active");
+					
+					var storeHoliday = store.store_holiday;
+					
+					if (storeHoliday !== undefined && storeHoliday.length > 0) {
+						if (storeHoliday === "no") {
+							$(".admin-update .store_holiday-no>button").addClass("active");
+						}
+						else {
+							var holidays = storeHoliday.split("|");
+							
+							for (var i=0; i<holidays.length; i++) {
+								if (holidays[i] === "") {
+									continue;
+								}
+								
+								$(".admin-update .store_holiday-weekdays>button[day='" + holidays[i] + "']").addClass("active");
+							}
+						}
+					}
 				},
 			});
 		}
@@ -94,12 +151,13 @@ require([
 				var count = result.count;
 				
 				var itemHTML = "";
-				var storeNum = ((currentPage - 1)* pagesPerPaging)+1;
+				var storeNo = (currentPage - 1) * rowsPerPage;
+				
 				for (var i=0; i<list.length; i++) {
 					var item = list[i];
 					
 					itemHTML += "<tr store-id='" + item.store_id + "'>";
-					itemHTML += "<td>" + (storeNum+i) + "</td>";
+					itemHTML += "<td>" + (++storeNo) + "</td>";
 					itemHTML += "<td>" + item.category_name + "</td>";
 					itemHTML += "<td>" + item.location_name + "</td>";
 					itemHTML += "<td>" + item.store_name + "</td>";
@@ -162,33 +220,53 @@ require([
 	}
 	
 	$(".btn-addr").on("click", function() {
-		var jusoPop = window.open("/admin/juso#ready","jusoPop","width=570,height=420, scrollbars=yes");
+		var jusoPop = window.open("/admin/juso#ready","jusoPop",
+				"width=570,height=420, scrollbars=yes");
 		
-		var addrInput =$("#"+$(this).attr("for"));
+		var addrInput = $("#" + $(this).attr("for"));
 		
 		window.jusoCallback = function(addr, geoInfo) {
-			console.log(geoInfo.results[0].geometry.location);
 			addrInput.val(addr);
 			
 			currentStore.storeAddr = addr;
-			currentStore.storeLat =geoInfo.results[0].geometry.location.lat;
-			currentStore.storeLng =geoInfo.results[0].geometry.location.lng;
+			currentStore.storeLat = geoInfo.results[0].geometry.location.lat;
+			currentStore.storeLng = geoInfo.results[0].geometry.location.lng;
 			
 			var mapImageSrc = "https://maps.googleapis.com/maps/api/staticmap" +
-            "?center=" + currentStore.storeLat + "," + currentStore.storeLng +
-            "&markers=color:red|" + currentStore.storeLat + "," + currentStore.storeLng +
-            "&zoom=16" +
-            "&size=300x300" +
-            "&key=AIzaSyAOTSLj132cWOhCddu9kOwj7u2yBQLJ4PQ";
+					"?maptype=roadmap" +
+					"&center=" + currentStore.storeLat + "," + currentStore.storeLng +
+					"&markers=color:red|" + currentStore.storeLat + "," + currentStore.storeLng +
+					"&zoom=16" +
+					"&size=300x300" +
+					"&key=AIzaSyAHX_Y_cP2i1v9lchEPJ4yROwzh9nK6of0";
+			
 			addrInput.parent("div").find("img").remove();
-			addrInput.parent("div").append("<img src='"+mapImageSrc+"'>");
+			addrInput.parent("div").append("<img src='" + mapImageSrc + "'>");
 		};
+	});
+	
+	$(".store_holiday-weekdays>button").on("click", function() {
+		$(".store_holiday-no>button").removeClass("active");
+		$(this).toggleClass("active");
+	});
+	
+	$(".store_holiday-no>button").on("click", function() {
+		$(".store_holiday-weekdays>button").removeClass("active");
+		$(this).addClass("active");
 	});
 	
 	$(".btn-admin-update").on("click", function() {
 		var storeId = $("#upt-store_id").val();
 		var storeName = $("#upt-store_name").val().trim();
+		var branchName = $("#upt-branch_name").val().trim();
 		var storeImg = $("#upt-store_img").val();
+		var storeTel = $("#upt-store_tel").val().trim();
+		var storePrice = $("#upt-store_price").val().trim();
+		var storeParking = $("#upt-store_parking").val().trim();
+		var storeTime = $("#upt-store_time").val().trim();
+		var storeBreak = $("#upt-store_break").val().trim();
+		var storeWebsite = $("#upt-store_website").val().trim();
+
 		if (storeName === "") {
 			alert("맛집명을 입력하세요.");
 			$("#upt-store_name").focus();
@@ -197,14 +275,39 @@ require([
 		
 		var formData = new FormData();
 		formData.append("storeName", storeName);
+		formData.append("branchName", branchName);
+		formData.append("storeAddr", currentStore.storeAddr);
+		formData.append("storeLat", currentStore.storeLat);
+		formData.append("storeLng", currentStore.storeLng);
 		formData.append("categoryId", currentStore.categoryId);
 		formData.append("locationId", currentStore.locationId);
+		formData.append("storeTel", storeTel);
+		formData.append("storePrice", storePrice);
+		formData.append("storeParking", storeParking);
+		formData.append("storeTime", storeTime);
+		formData.append("storeBreak", storeBreak);
+		formData.append("storeWebsite", storeWebsite);
 		
 		if (storeImg !== "") {
 			var files = $("#upt-store_img")[0].files;
 			
 			formData.append("storeImg", files[0]);
 		}
+		
+		var storeHoliday = "";
+		
+		if ($(".admin-update .store_holiday-no>button").hasClass("active")) {
+			storeHoliday = "no";
+		}
+		else {
+			var holidays = $(".admin-update .store_holiday-weekdays>button.active");
+			
+			for (var i=0; i<holidays.length; i++) {
+				storeHoliday += $(holidays[i]).attr("day") + "|";
+			}
+		}
+		
+		formData.append("storeHoliday", storeHoliday);
 		
 		$.ajax({
 			url: "/admin/api/store/" + storeId,
@@ -223,19 +326,26 @@ require([
 	
 	$(".btn-admin-save").on("click", function() {
 		var storeName = $("#add-store_name").val().trim();
+		var branchName = $("#add-branch_name").val().trim();
 		var storeImg = $("#add-store_img").val();
+		var storeTel = $("#add-store_tel").val().trim();
+		var storePrice = $("#add-store_price").val().trim();
+		var storeParking = $("#add-store_parking").val().trim();
+		var storeTime = $("#add-store_time").val().trim();
+		var storeBreak = $("#add-store_break").val().trim();
+		var storeWebsite = $("#add-store_website").val().trim();
 		
 		if (storeName === "") {
 			alert("맛집명을 입력하세요.");
 			$("#add-store_name").focus();
 			return;
 		}
-		else if (!currentStore.storeAddr) {
-			alert("주소입력하세요");
-			return;
-		}
 		else if (storeImg === "") {
 			alert("대표이미지를 선택하세요.");
+			return;
+		}
+		else if (!currentStore.storeAddr) {
+			alert("주소를 입력하세요.");
 			return;
 		}
 		else if (!currentStore.categoryId) {
@@ -249,11 +359,33 @@ require([
 		
 		var formData = new FormData();
 		formData.append("storeName", storeName);
+		formData.append("branchName", branchName);
 		formData.append("storeAddr", currentStore.storeAddr);
 		formData.append("storeLat", currentStore.storeLat);
 		formData.append("storeLng", currentStore.storeLng);
 		formData.append("categoryId", currentStore.categoryId);
 		formData.append("locationId", currentStore.locationId);
+		formData.append("storeTel", storeTel);
+		formData.append("storePrice", storePrice);
+		formData.append("storeParking", storeParking);
+		formData.append("storeTime", storeTime);
+		formData.append("storeBreak", storeBreak);
+		formData.append("storeWebsite", storeWebsite);
+		
+		var storeHoliday = "";
+		
+		if ($(".admin-add .store_holiday-no>button").hasClass("active")) {
+			storeHoliday = "no";
+		}
+		else {
+			var holidays = $(".admin-add .store_holiday-weekdays>button.active");
+			
+			for (var i=0; i<holidays.length; i++) {
+				storeHoliday += $(holidays[i]).attr("day") + "|";
+			}
+		}
+		
+		formData.append("storeHoliday", storeHoliday);
 		
 		var files = $("#add-store_img")[0].files;
 		
@@ -275,9 +407,10 @@ require([
 	});
 	
 	$(".btn-admin-delete").on("click", function() {
-		var storeId = $("#upt-store_id").val();
+		var categoryId = $("#upt-store_id").val();
+		
 		$.ajax({
-			url: "/admin/api/store/" + storeId,
+			url: "/admin/api/store/" + categoryId,
 			method: "DELETE",
 			success: function() {
 				common.showSection(".admin-list", null, handler);

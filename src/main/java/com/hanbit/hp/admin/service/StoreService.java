@@ -35,10 +35,12 @@ public class StoreService {
 	
 	@Transactional
 	public int modify(String storeId, String storeName,
-			String categoryId, String locationId,
+			String categoryId, String locationId, Map storeDetail,
 			MultipartFile storeImgFile) {
 		
 		int result = storeDAO.update(storeId, storeName, categoryId, locationId);
+		
+		storeDAO.updateDetail(storeDetail);
 		
 		if (storeImgFile != null) {
 			fileService.updateAndSave(storeId, storeImgFile);
@@ -46,10 +48,15 @@ public class StoreService {
 		
 		return result;
 	}
+	
 	@Transactional
-	public int delete (String storeId) {
-		fileService.delete(storeId);
+	public int remove(String storeId) {
+		storeDAO.deleteDetail(storeId);
+		
 		int result = storeDAO.delete(storeId);
+		
+		fileService.delete(storeId);
+		
 		return result;
 	}
 
@@ -62,8 +69,11 @@ public class StoreService {
 		String storeImg = "/api2/file/" + storeId;	
 		
 		int result = storeDAO.insert(storeId, storeName, storeImg, categoryId, locationId);
+		
 		storeDetail.put("storeId", storeId);
+		
 		storeDAO.insertDetail(storeDetail);
+		
 		fileService.addAndSave(storeId, storeImgFile);
 		
 		return result;

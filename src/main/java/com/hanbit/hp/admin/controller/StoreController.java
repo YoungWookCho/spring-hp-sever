@@ -44,10 +44,44 @@ public class StoreController {
 	public Map get(@PathVariable("storeId") String storeId) {
 		return storeService.get(storeId);
 	}
-	@RequestMapping(value="/{storeId}", method=RequestMethod.DELETE)
-	public Map delete(@PathVariable("storeId") String storeId) {
+	
+	@RequestMapping(value="/{storeId}", method=RequestMethod.POST)
+	public Map modify(@PathVariable("storeId") String storeId,
+			MultipartHttpServletRequest request) {
 		
-		storeService.delete(storeId);
+		String storeName = request.getParameter("storeName");
+		String branchName = request.getParameter("branchName");
+		String categoryId = request.getParameter("categoryId");
+		String locationId = request.getParameter("locationId");
+		String storeAddr = request.getParameter("storeAddr");
+		float storeLat = Float.parseFloat(request.getParameter("storeLat"));
+		float storeLng = Float.parseFloat(request.getParameter("storeLng"));
+		String storeTel = request.getParameter("storeTel");
+		String storePrice = request.getParameter("storePrice");
+		String storeParking = request.getParameter("storeParking");
+		String storeTime = request.getParameter("storeTime");
+		String storeBreak = request.getParameter("storeBreak");
+		String storeHoliday = request.getParameter("storeHoliday");
+		String storeWebsite = request.getParameter("storeWebsite");
+		
+		Map storeDetail = new HashMap();
+		storeDetail.put("storeId", storeId);
+		storeDetail.put("branchName", branchName);
+		storeDetail.put("storeAddr", storeAddr);
+		storeDetail.put("storeLat", storeLat);
+		storeDetail.put("storeLng", storeLng);
+		storeDetail.put("storeTel", storeTel);
+		storeDetail.put("storePrice", storePrice);
+		storeDetail.put("storeParking", storeParking);
+		storeDetail.put("storeTime", storeTime);
+		storeDetail.put("storeBreak", storeBreak);
+		storeDetail.put("storeHoliday", storeHoliday);
+		storeDetail.put("storeWebsite", storeWebsite);
+		
+		MultipartFile storeImgFile = request.getFile("storeImg");
+		
+		storeService.modify(storeId, storeName, categoryId, locationId, storeDetail,
+				storeImgFile);
 		
 		Map result = new HashMap();
 		result.put("result", "ok");
@@ -55,17 +89,10 @@ public class StoreController {
 		return result;
 	}
 	
-	@RequestMapping(value="/{storeId}", method=RequestMethod.POST)
-	public Map modify(@PathVariable("storeId") String storeId,
-			MultipartHttpServletRequest request) {
+	@RequestMapping(value="/{storeId}", method=RequestMethod.DELETE)
+	public Map remove(@PathVariable("storeId") String storeId) {
 		
-		String storeName = request.getParameter("storeName");
-		String categoryId = request.getParameter("categoryId");
-		String locationId = request.getParameter("locationId");
-		
-		MultipartFile storeImgFile = request.getFile("storeImg");
-		
-		storeService.modify(storeId, storeName, categoryId, locationId, storeImgFile);
+		storeService.remove(storeId);
 		
 		Map result = new HashMap();
 		result.put("result", "ok");
@@ -76,20 +103,37 @@ public class StoreController {
 	@RequestMapping(value="/add", method=RequestMethod.POST)
 	public Map add(MultipartHttpServletRequest request) {
 		String storeName = request.getParameter("storeName");
+		String branchName = request.getParameter("branchName");
 		String categoryId = request.getParameter("categoryId");
 		String locationId = request.getParameter("locationId");
 		String storeAddr = request.getParameter("storeAddr");
 		float storeLat = Float.parseFloat(request.getParameter("storeLat"));
 		float storeLng = Float.parseFloat(request.getParameter("storeLng"));
+		String storeTel = request.getParameter("storeTel");
+		String storePrice = request.getParameter("storePrice");
+		String storeParking = request.getParameter("storeParking");
+		String storeTime = request.getParameter("storeTime");
+		String storeBreak = request.getParameter("storeBreak");
+		String storeHoliday = request.getParameter("storeHoliday");
+		String storeWebsite = request.getParameter("storeWebsite");
 		
 		Map storeDetail = new HashMap();
+		storeDetail.put("branchName", branchName);
 		storeDetail.put("storeAddr", storeAddr);
 		storeDetail.put("storeLat", storeLat);
 		storeDetail.put("storeLng", storeLng);
-
+		storeDetail.put("storeTel", storeTel);
+		storeDetail.put("storePrice", storePrice);
+		storeDetail.put("storeParking", storeParking);
+		storeDetail.put("storeTime", storeTime);
+		storeDetail.put("storeBreak", storeBreak);
+		storeDetail.put("storeHoliday", storeHoliday);
+		storeDetail.put("storeWebsite", storeWebsite);
+		
 		MultipartFile storeImgFile = request.getFile("storeImg");
 		
-		storeService.add(storeName, categoryId, locationId, storeDetail, storeImgFile);
+		storeService.add(storeName, categoryId, locationId, storeDetail, 
+				storeImgFile);
 		
 		Map result = new HashMap();
 		result.put("result", "ok");
